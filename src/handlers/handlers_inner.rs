@@ -3,6 +3,7 @@ use crate::{
     persistance::{answers_dao::AnswersDao, questions_dao::QuestionsDao},
 };
 
+/// Represents errors that can occur within request handlers.
 #[derive(Debug, PartialEq)]
 pub enum HandlerError {
     BadRequest(String),
@@ -10,6 +11,14 @@ pub enum HandlerError {
 }
 
 impl HandlerError {
+
+    /// Constructs a default internal error.
+    ///
+    /// This method creates an instance of `HandlerError` representing a generic internal error message.
+    ///
+    /// # Returns
+    ///
+    /// A `HandlerError` instance representing a default internal error message.
     pub fn default_internal_error() -> Self {
         HandlerError::InternalError("Something went wrong! Please try again.".to_owned())
     }
@@ -32,6 +41,15 @@ pub async fn create_question(
     }
 }
 
+/// Asynchronously retrieves all questions using the provided `QuestionsDao`.
+///
+/// # Arguments
+///
+/// * `questions_dao` - A reference to an object implementing the `QuestionsDao` trait along with `Sync` and `Send` traits.
+///
+/// # Returns
+///
+/// A `Result` containing a vector of question details on success, or a `HandlerError` on failure.
 pub async fn read_questions(
     questions_dao: &(dyn QuestionsDao + Sync + Send),
 ) -> Result<Vec<QuestionDetail>, HandlerError> {
@@ -46,6 +64,16 @@ pub async fn read_questions(
     }
 }
 
+/// Asynchronously deletes a question identified by the given `QuestionId` using the provided `QuestionsDao`.
+///
+/// # Arguments
+///
+/// * `question_id` - The unique identifier of the question to be deleted.
+/// * `questions_dao` - A reference to an object implementing the `QuestionsDao` trait along with `Sync` and `Send` traits.
+///
+/// # Returns
+///
+/// A `Result` indicating success or failure. An empty `Ok(())` is returned on success, otherwise, a `HandlerError` is returned.
 pub async fn delete_question(
     question_id: QuestionId,
     questions_dao: &(dyn QuestionsDao + Sync + Send),
@@ -59,6 +87,16 @@ pub async fn delete_question(
     Ok(())
 }
 
+/// Asynchronously creates an answer using the provided `AnswersDao`.
+///
+/// # Arguments
+///
+/// * `answer` - The answer to be created.
+/// * `answers_dao` - A reference to an object implementing the `AnswersDao` trait along with `Send` and `Sync` traits.
+///
+/// # Returns
+///
+/// A `Result` containing the created answer detail on success, or a `HandlerError` on failure.
 pub async fn create_answer(
     answer: Answer,
     answers_dao: &(dyn AnswersDao + Send + Sync),
@@ -78,6 +116,16 @@ pub async fn create_answer(
     }
 }
 
+/// Asynchronously retrieves answers associated with the given question ID using the provided `AnswersDao`.
+///
+/// # Arguments
+///
+/// * `question_id` - The unique identifier of the question whose answers are to be retrieved.
+/// * `answers_dao` - A reference to an object implementing the `AnswersDao` trait along with `Send` and `Sync` traits.
+///
+/// # Returns
+///
+/// A `Result` containing a vector of answer details on success, or a `HandlerError` on failure.
 pub async fn read_answers(
     question_id: QuestionId,
     answers_dao: &(dyn AnswersDao + Send + Sync),
@@ -93,6 +141,16 @@ pub async fn read_answers(
     }
 }
 
+/// Asynchronously deletes an answer identified by the given `AnswerId` using the provided `AnswersDao`.
+///
+/// # Arguments
+///
+/// * `answer_id` - The unique identifier of the answer to be deleted.
+/// * `answers_dao` - A reference to an object implementing the `AnswersDao` trait along with `Send` and `Sync` traits.
+///
+/// # Returns
+///
+/// A `Result` indicating success or failure. An empty `Ok(())` is returned on success, otherwise, a `HandlerError` is returned.
 pub async fn delete_answer(
     answer_id: AnswerId,
     answers_dao: &(dyn AnswersDao + Send + Sync),

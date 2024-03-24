@@ -1,12 +1,14 @@
 use thiserror::Error;
 use serde::{Deserialize, Serialize};
 
+/// Represents a question
 #[derive(Serialize, Deserialize)]
 pub struct Question {
     pub title: String,
     pub description: String,
 }
 
+/// Represents a question detail
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct QuestionDetail {
     pub question_uuid: String,
@@ -15,6 +17,7 @@ pub struct QuestionDetail {
     pub created_at: String,
 }
 
+/// Represents a Question ID from the DB
 #[derive(Serialize, Deserialize)]
 pub struct QuestionId {
     pub question_uuid: String,
@@ -22,12 +25,14 @@ pub struct QuestionId {
 
 // ----------
 
+/// Represents an answer
 #[derive(Serialize, Deserialize)]
 pub struct Answer {
     pub question_uuid: String,
     pub content: String,
 }
 
+/// Represents an answer detail
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct AnswerDetail {
     pub answer_uuid: String,
@@ -36,20 +41,26 @@ pub struct AnswerDetail {
     pub created_at: String,
 }
 
+// Represents an answer ID in the DB
 #[derive(Serialize, Deserialize)]
 pub struct AnswerId {
     pub answer_uuid: String,
 }
 
+/// Errors for database operations
 #[derive(Error, Debug)]
 pub enum DBError {
+
+    /// UUID error
     #[error("Invalid UUID provided: {0}")]
     InvalidUUID(String),
+
+    /// All other errors
     #[error("Database error occurred")]
     Other(#[from] Box<dyn std::error::Error + Send + Sync>),
 }
 
-// source: https://www.postgresql.org/docs/current/errcodes-appendix.html
+// Source: https://www.postgresql.org/docs/current/errcodes-appendix.html
 pub mod postgres_error_codes {
     pub const FOREIGN_KEY_VIOLATION: &str = "23503";
 }

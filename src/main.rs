@@ -20,12 +20,14 @@ use persistance::{
     questions_dao::{QuestionsDao, QuestionsDaoImpl},
 };
 
+/// Represents the application state containing DAO instances for questions and answers.
 #[derive(Clone)]
 pub struct AppState {
     pub questions_dao: Arc<dyn QuestionsDao + Send + Sync>,
     pub answers_dao: Arc<dyn AnswersDao + Send + Sync>,
 }
 
+/// Main entry point of the application
 #[tokio::main]
 async fn main() {
     const MAX_CONNECTIONS: u32 = 5;

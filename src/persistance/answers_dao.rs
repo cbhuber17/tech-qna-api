@@ -3,17 +3,46 @@ use sqlx::PgPool;
 
 use crate::models::{postgres_error_codes, Answer, AnswerDetail, DBError};
 
+/// A trait representing data access operations for questions in the database.
 #[async_trait]
 pub trait AnswersDao {
+
+    /// Asynchronously creates a new answer in the database.
+    ///
+    /// # Arguments
+    ///
+    /// * `answer` - The answer to be created.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing the newly created answer detail on success, or a `DBError` on failure.
     async fn create_answer(&self, answer: Answer) -> Result<AnswerDetail, DBError>;
+
+    /// Asynchronously deletes an answer from the database.
+    ///
+    /// # Arguments
+    ///
+    /// * `answer_uuid` - The unique identifier of the answer to be deleted.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` indicating success or failure. An empty `Ok(())` is returned on success, otherwise, a `DBError` is returned.
     async fn delete_answer(&self, answer_uuid: String) -> Result<(), DBError>;
+
+    /// Asynchronously retrieves all answers from the database.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a vector of answer details on success, or a `DBError` on failure.
     async fn get_answers(&self, question_uuid: String) -> Result<Vec<AnswerDetail>, DBError>;
 }
 
+/// Implementation of the `AnswersDao` trait for PostgreSQL database.
 pub struct AnswersDaoImpl {
     db: PgPool,
 }
 
+/// Constructor
 impl AnswersDaoImpl {
     pub fn new(db: PgPool) -> Self {
         AnswersDaoImpl {db} 
@@ -22,6 +51,16 @@ impl AnswersDaoImpl {
 
 #[async_trait]
 impl AnswersDao for AnswersDaoImpl {
+
+    /// Asynchronously creates a new answer in the database.
+    ///
+    /// # Arguments
+    ///
+    /// * `answer` - The answer to be created.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing the newly created answer detail on success, or a `DBError` on failure.
     async fn create_answer(&self, answer: Answer) -> Result<AnswerDetail, DBError> {
 
         // Attempt to get question UUID (for the answer), make sure it is valid
@@ -64,6 +103,15 @@ impl AnswersDao for AnswersDaoImpl {
         })
     }
 
+    /// Asynchronously deletes an answer from the database.
+    ///
+    /// # Arguments
+    ///
+    /// * `answer_uuid` - The unique identifier of the answer to be deleted.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` indicating success or failure. An empty `Ok(())` is returned on success, otherwise, a `DBError` is returned.
     async fn delete_answer(&self, answer_uuid: String) -> Result<(), DBError> {
 
         // Attempt to get the answer UUID, make sure it is valid
@@ -79,6 +127,11 @@ impl AnswersDao for AnswersDaoImpl {
         Ok(())
     }
 
+    /// Asynchronously retrieves all answers for a UUID from the database.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a vector of answer details on success, or a `DBError` on failure.
     async fn get_answers(&self, question_uuid: String) -> Result<Vec<AnswerDetail>, DBError> {
 
         // Attempt to get question UUID (for the answer), make sure it is valid
